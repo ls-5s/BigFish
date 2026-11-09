@@ -1,0 +1,8 @@
+name: astrbot_plugin_dafeiyu_persona
+display_name: 大肥鱼自己补人格
+desc: 让大肥鱼把聊天里学到的东西自己写进人格：主人立规矩、她自己的新认识、关系变化，都能记住并长期生效
+help: 主人说「记住……」或「补一下你的人格」即可；/我的人格 查看，/补人格 文本 手动加，/还原人格 确认 恢复原样
+version: v0.1.0
+author: zexuan604
+support_platforms:
+  - aiocqhttp

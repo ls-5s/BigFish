@@ -4,8 +4,15 @@ credentials.txt
 AstrBot/data/cmd_config.json
 AstrBot/data/plugins.json
 AstrBot/data/plugins_init.json
-**/state.json
+AstrBot/data/mcp_server.json
+AstrBot/data/skills.json
+AstrBot/data/config/
 AstrBot/data/plugin_data/
+AstrBot/data/attachments/
+AstrBot/data/knowledge_base/
+AstrBot/data/webchat/
+SnowLuma/config/
+**/state.json
 
 # ============ 运行产物 ============
 logs/
@@ -14,18 +21,48 @@ logs/
 **/*.pyc
 **/.venv/
 **/node_modules/
-
-# ============ 大件 / 缓存 / 二进制 ============
-SnowLuma/
-_disabled/
-_debug/
+AstrBot/data/temp/
+AstrBot/data/*.db
+AstrBot/data/*.db-*
+AstrBot/data/*.db.bak-*
 **/*.db
-**/*.db-*
-**/*.db.bak*
-**/*.jpg
-**/*.jpeg
-**/*.png
-**/*.gif
-**/*.mp3
+**/*.db-wal
+**/*.db-shm
+
+# ============ 大件 / 二进制 / 缓存 ============
+SnowLuma/node.exe
+SnowLuma/native/
+SnowLuma/data/
+SnowLuma/logs/
+AstrBot/data/plugins/meme_manager/packs/
+AstrBot/data/plugins/*/data/
+AstrBot/data/plugins/*/cache/
+_disabled/**/cache/
+_disabled/startup/
 **/*.zip
-AstrBot/data/plugins/meme_manager/
+**/*.wav
+**/*.mp3
+
+# ============ 调试草稿 / 人格素材 ============
+_debug/pack/
+_debug/restore/
+_debug/runs/
+_debug/prompt_v*.txt
+_debug/pack_persona.txt
+_debug/persona_body.json
+_debug/persona_dump.txt
+_debug/persona_test*.py
+_debug/test_persona_*.py
+_debug/*.png
+_debug/cmd_config*
+_debug/*.bak*
+
+# ============ 杂项 ============
+_wtest.txt
+_do_commit*.ps1
+_msg5.txt
+/data/
+AstrBot/.astrbot
+AstrBot/astrbot.lock
+AstrBot/data/cmd_config.json.bak-init
+AstrBot/data/plugins/qzone_life/img_cache/

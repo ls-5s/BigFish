@@ -1,0 +1,54 @@
+{
+  "owner_qq": {
+    "description": "主人的 QQ 号",
+    "type": "string",
+    "hint": "只有这个号能让她补/删/还原人格；AstrBot 管理员也算主人",
+    "default": "2408224899"
+  },
+  "owner_session": {
+    "description": "主人的私聊会话",
+    "type": "string",
+    "hint": "形如 qq-main:FriendMessage:2408224899",
+    "default": "qq-main:FriendMessage:2408224899"
+  },
+  "persona_id": {
+    "description": "要补充的人格名",
+    "type": "string",
+    "hint": "AstrBot 面板里的人格名，默认大肥鱼",
+    "default": "大肥鱼"
+  },
+  "sync_to_persona": {
+    "description": "把补的设定写回人格本体",
+    "type": "bool",
+    "hint": "开着时 AstrBot 面板的人格会多一段「你后来自己补上的设定」；关掉就只在聊天提示里临时注入",
+    "default": true
+  },
+  "auto_reflect": {
+    "description": "让她定期自己反省、补人格",
+    "type": "bool",
+    "hint": "每聊 N 轮，用最近对话做一次自省，只记稳定的新认识",
+    "default": true
+  },
+  "reflect_every": {
+    "description": "每几轮自省一次",
+    "type": "int",
+    "hint": "只在主人私聊里计数",
+    "default": 24
+  },
+  "max_notes": {
+    "description": "最多保留几条设定",
+    "type": "int",
+    "default": 60
+  },
+  "max_note_chars": {
+    "description": "每条最多几个字",
+    "type": "int",
+    "default": 80
+  },
+  "inject_max_chars": {
+    "description": "写进人格的补充最多多少字",
+    "type": "int",
+    "hint": "条目太多时会先淘汰最久没被强化的",
+    "default": 1400
+  }
+}
