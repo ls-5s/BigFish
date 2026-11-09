@@ -1,0 +1,4 @@
+name: voice_request
+desc: 默认只发文字；他说发语音/说句话/唱时，额外合成一条语音
+author: dsh
+version: 1.0.0
