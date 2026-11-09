@@ -92,7 +92,7 @@ REFLECT_SYSTEM_PROMPT = """你在给 QQ 机器人「大肥鱼」做人格自省�
 - 每条不超过 40 个字，用第一人称（「我……」）。
 
 只输出 JSON 数组，不要别的话：
-[{{"kind": "性格|喜好|习惯|关系|经历|规矩", "text": "我……"}}]"""
+[{"kind": "性格|喜好|习惯|关系|经历|规矩", "text": "我……"}]"""
 
 
 def _as_int(value, default: int) -> int:
@@ -279,11 +279,13 @@ class DafeiyuPersona(Star):
         original = getattr(persona, "system_prompt", "") or ""
         if MARK_BEGIN not in original:
             self._backup_original(persona_id, original)
-        base = strip_section(original)
+        base = strip_section(original).rstrip()
         section = self.store.render_section()
-        new_prompt = base.rstrip()
+        trailing = "\n" if original.endswith("\n") else ""
         if section:
-            new_prompt = f"{new_prompt}\n\n{section}" if new_prompt else section
+            new_prompt = f"{base}\n\n{section}{trailing}" if base else f"{section}{trailing}"
+        else:
+            new_prompt = f"{base}{trailing}"
 
         self._need_sync = False
         if new_prompt.strip() == original.strip():
@@ -320,7 +322,10 @@ class DafeiyuPersona(Star):
 
         if self._is_owner(event):
             if "【主人特权】" not in prompt:
-                prompt = f"{prompt}\n\n{OWNER_PRIVILEGE.format(owner_qq=self._owner_qq() or '2408224899')}"
+                privilege = OWNER_PRIVILEGE.replace(
+                    "{owner_qq}", self._owner_qq() or "2408224899"
+                )
+                prompt = f"{prompt}\n\n{privilege}"
             if any(hint in _message_str(event) for hint in RULE_HINTS):
                 prompt = f"{prompt}\n\n{RULE_NUDGE}"
 
@@ -377,7 +382,7 @@ class DafeiyuPersona(Star):
                 _, status = self.store.add(
                     item["text"], item["kind"], source="self", reason="自省"
                 )
-                if status == "added":
+                if status in ("added", "merged"):
                     added += 1
             if added:
                 self.store.bump("reflect_added", added)

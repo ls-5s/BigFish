@@ -74,6 +74,14 @@ STYLE_PROMPT = (
     "（链接和封面会另外发），总共不超过 40 字。"
 )
 
+CHOOSE_PROMPT = (
+    "你是住在主人电脑里的鲸鱼娘「大肥鱼」：嘴馋、爱摸鱼、有点傲娇、说话短。"
+    "现在你在刷抖音，划到了下面几条，想挑一条转给主人。"
+    "先挑一条你觉得最有意思、最想让他看的，再用你自己的口吻写 1~2 句点评，总共不超过 40 字。"
+    "只输出「序号|点评」，不要解释、不要复述完整标题、不要贴链接，"
+    "不要提“AI”“推荐算法”“本视频”。"
+)
+
 MIN_MS = 6_000
 MAX_MS = 180_000
 MIN_DIGG = 2_000
@@ -168,15 +176,14 @@ class Main(Star):
             return False
         return True
 
-    def _pick(self, items: list[dict], seen: list[str]) -> dict | None:
+    def _shortlist(self, items: list[dict], seen: list[str], k: int = 6) -> list[dict]:
         seen_set = {str(x) for x in seen}
         pool = [a for a in items if self._eligible(a, seen_set)]
-        if not pool:
-            return None
-        # 点赞多的优先，但只在最高的 6 条里随机，避免每次都推同一批爆款
-        pool.sort(key=lambda a: int((a.get("statistics") or {}).get("digg_count") or 0))
-        top = pool[max(0, len(pool) - 6):]
-        return random.choice(top)
+        pool.sort(
+            key=lambda a: int((a.get("statistics") or {}).get("digg_count") or 0),
+            reverse=True,
+        )
+        return pool[:k]
 
     async def _download_cover(self, aweme: dict) -> bytes:
         url = (((aweme.get("video") or {}).get("cover") or {}).get("url_list") or [""])[0]
@@ -225,6 +232,37 @@ class Main(Star):
                 old.unlink(missing_ok=True)
         except Exception as exc:  # noqa: BLE001
             logger.warning(f"[douyin_share] 封面缓存失败: {exc!r}")
+
+    async def _choose_and_comment(self, shortlist: list[dict]) -> tuple[dict, str]:
+        """让她自己从几条里挑一条，并顺手写点评。"""
+        provider = self.context.get_using_provider()
+        if provider is None:
+            return shortlist[0], "这个有点意思，你看看。"
+        lines = []
+        for i, aweme in enumerate(shortlist, 1):
+            desc = TAG.sub("", str(aweme.get("desc") or "")).strip()[:40]
+            author = (aweme.get("author") or {}).get("nickname") or ""
+            dur = int((aweme.get("video") or {}).get("duration") or 0) // 1000
+            digg = (aweme.get("statistics") or {}).get("digg_count") or 0
+            lines.append(f"{i}. {desc}（博主：{author}，{dur}秒，{digg}赞）")
+        prompt = "你划到了这几条：\n" + "\n".join(lines)
+        try:
+            resp = await provider.text_chat(prompt=prompt, system_prompt=CHOOSE_PROMPT)
+            text = (getattr(resp, "completion_text", "") or "").strip()
+            match = re.match(r"^\s*(\d+)\s*[|｜.、:：,，]?\s*(.+)$", text, re.S)
+            if match:
+                idx = int(match.group(1)) - 1
+                comment = (
+                    match.group(2).strip().replace("\n", " ").strip('"“”「」')
+                )
+                if 0 <= idx < len(shortlist) and comment:
+                    return shortlist[idx], comment[:80]
+            cleaned = text.replace("\n", " ").strip('"“”「」')
+            if cleaned:
+                return shortlist[0], cleaned[:80]
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(f"[douyin_share] 选片/点评失败: {exc}")
+        return shortlist[0], await self._comment(shortlist[0])
 
     async def _comment(self, aweme: dict) -> str:
         provider = self.context.get_using_provider()
@@ -308,12 +346,12 @@ class Main(Star):
             items = [a for k, a in merged.items() if k]
             if not items:
                 return False, "抖音没连上"
-            aweme = self._pick(items, state.get("seen") or [])
-            if not aweme:
+            shortlist = self._shortlist(items, state.get("seen") or [])
+            if not shortlist:
                 return False, "今天没刷到什么合适的"
+            aweme, comment = await self._choose_and_comment(shortlist)
             cover = self._to_jpeg(await self._download_cover(aweme))
             self._cache_cover(str(aweme["aweme_id"]), cover)
-            comment = await self._comment(aweme)
             desc = str(aweme.get("desc") or "").strip()
             desc = TAG.sub("", desc).strip() or desc
             desc = desc[:60]
@@ -419,9 +457,16 @@ class Main(Star):
 
     async def initialize(self) -> None:
         state = self._read_state()
+        dirty = False
+        for legacy in ("slots", "sent", "last_browse"):
+            if legacy in state:
+                state.pop(legacy, None)
+                dirty = True
         now = time.time()
         if float(state.get("next_check") or 0) <= now:
             state["next_check"] = now + random.randint(10 * 60, 25 * 60)
+            dirty = True
+        if dirty:
             self._write_state(state)
         self._task = asyncio.create_task(self._loop())
         logger.info("[douyin_share] 抖音自主刷已启动（想刷就刷，没有时间表）")
