@@ -1,0 +1,8 @@
+{
+    "sync_name": {
+        "description": "使bot的Q名与人格名同步",
+        "type": "bool",
+        "hint": "",
+        "default": false
+    }
+}
