@@ -1,0 +1,4 @@
+name: diary
+desc: 轻量日记：记录最近对话，每天 23:30 生成一篇女友日记并推送到 QQ，/写日记 可立即生成
+author: dsh
+version: 1.0.0

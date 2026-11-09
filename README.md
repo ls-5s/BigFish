@@ -2,7 +2,7 @@
 
 一只跑在 QQ 上的鲸鱼娘 —— 基于 [AstrBot](https://github.com/AstrBotDevs/AstrBot) 的聊天机器人，用 SnowLuma 作为 QQ 协议端（OneBot v11），DeepSeek 作大脑。
 
-> 本仓库当前只放出项目说明与骨架。运行数据、数据库、日志、以及任何凭据都**不入库**。
+> 本仓库收录的是**自己写的插件和启停脚本**。运行数据、数据库、日志、第三方插件、以及任何凭据都**不入库**（见 `.gitignore`）。
 
 ## 架构
 

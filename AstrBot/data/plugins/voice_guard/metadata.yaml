@@ -1,0 +1,4 @@
+name: voice_guard
+desc: 防止一条回复被拆成多条语音：多段回复自动退回文字气泡，只有单段回复才发语音
+author: dsh
+version: 1.0.0

@@ -1,0 +1,4 @@
+name: group_bili
+desc: 群里被点名说「刷B站/来条视频」时，挑一条热门视频，把封面和链接跟着回复一起发出去
+author: dsh
+version: 1.0.0

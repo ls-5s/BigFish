@@ -1,0 +1,4 @@
+name: emotion_link
+desc: 把情绪管理插件的数值翻译成情绪标签：联动表情包、提供 /情绪 卡片、每天主动播报心情
+author: dsh
+version: 1.0.0

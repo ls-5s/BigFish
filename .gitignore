@@ -1,0 +1,31 @@
+# ============ 凭据 / 隐私 ============
+credentials.txt
+*.bak-lmopt
+AstrBot/data/cmd_config.json
+AstrBot/data/plugins.json
+AstrBot/data/plugins_init.json
+**/state.json
+AstrBot/data/plugin_data/
+
+# ============ 运行产物 ============
+logs/
+**/*.log
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/node_modules/
+
+# ============ 大件 / 缓存 / 二进制 ============
+SnowLuma/
+_disabled/
+_debug/
+**/*.db
+**/*.db-*
+**/*.db.bak*
+**/*.jpg
+**/*.jpeg
+**/*.png
+**/*.gif
+**/*.mp3
+**/*.zip
+AstrBot/data/plugins/meme_manager/

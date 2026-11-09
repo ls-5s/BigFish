@@ -1,0 +1,4 @@
+name: direct_send
+desc: 私聊主人时绕过 WebSocket，直接用 OneBot HTTP 发送回复
+author: dsh
+version: 1.0.0

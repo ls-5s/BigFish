@@ -1,0 +1,4 @@
+name: link_reader
+desc: 消息里有 B 站链接时，抓标题/UP/简介塞进上下文
+author: dsh
+version: 1.0.0

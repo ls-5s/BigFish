@@ -1,0 +1,4 @@
+name: face_reply
+desc: 收到纯表情/贴纸时也回一句，不再装死（图片消息仍然交给看图模型）
+author: dsh
+version: 1.0.0
